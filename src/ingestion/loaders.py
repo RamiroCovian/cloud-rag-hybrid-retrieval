@@ -23,6 +23,7 @@ CATEGORY_BY_KEYWORD: dict[str, str] = {
 
 
 def infer_category(stem: str) -> str:
+    """Infiere una categoría a partir del nombre del archivo."""
     lowered = stem.lower()
     for keyword, category in CATEGORY_BY_KEYWORD.items():
         if keyword in lowered:
@@ -31,6 +32,7 @@ def infer_category(stem: str) -> str:
 
 
 def _relative_source(path: Path, root: Path) -> str:
+    """Devuelve la ruta relativa del archivo respecto al directorio raíz."""
     try:
         return str(path.resolve().relative_to(root.resolve())).replace("\\", "/")
     except ValueError:
@@ -38,6 +40,7 @@ def _relative_source(path: Path, root: Path) -> str:
 
 
 def _load_text_file(path: Path, root: Path) -> list[Document]:
+    """Carga un archivo de texto plano (.md / .txt) como un Document."""
     text = path.read_text(encoding="utf-8").strip()
     if not text:
         return []
@@ -58,6 +61,7 @@ def _load_text_file(path: Path, root: Path) -> list[Document]:
 
 
 def _load_pdf(path: Path, root: Path) -> list[Document]:
+    """Carga un PDF página a página, preservando número de página en metadata."""
     from langchain_community.document_loaders import PyPDFLoader
 
     document_id = path.stem
@@ -84,6 +88,7 @@ def _load_pdf(path: Path, root: Path) -> list[Document]:
 
 
 def _load_json(path: Path, root: Path) -> list[Document]:
+    """Carga un JSON con uno o varios documentos y su metadata asociada."""
     payload = json.loads(path.read_text(encoding="utf-8"))
     source = _relative_source(path, root)
     document_id = path.stem
@@ -132,7 +137,7 @@ def _load_json(path: Path, root: Path) -> list[Document]:
 
 
 def load_file(path: Path, root: Path | None = None) -> list[Document]:
-    """Carga un archivo individual según su extensión."""
+    """Carga un archivo individual según su extensión (.md, .txt, .pdf, .json)."""
     path = path.resolve()
     root = (root or path.parent).resolve()
     suffix = path.suffix.lower()
@@ -148,7 +153,7 @@ def load_file(path: Path, root: Path | None = None) -> list[Document]:
 
 
 def load_documents(directory: Path) -> list[Document]:
-    """Carga todos los documentos soportados de un directorio."""
+    """Recorre un directorio y carga todos los documentos soportados."""
     directory = directory.resolve()
     if not directory.exists():
         raise FileNotFoundError(f"No existe el directorio de documentos: {directory}")

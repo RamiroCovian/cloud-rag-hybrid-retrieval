@@ -13,6 +13,7 @@ from src.pinecone_index import ensure_pinecone_index
 
 
 def main() -> None:
+    """Punto de entrada: crea el índice Pinecone Serverless si no existe."""
     ensure_pinecone_index()
 
 

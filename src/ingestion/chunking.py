@@ -12,7 +12,11 @@ def split_documents(
     chunk_size: int = 2000,
     chunk_overlap: int = 250,
 ) -> list[Document]:
-    """Divide documentos en chunks (~500–800 tokens con size≈2000)."""
+    """Divide documentos en chunks con RecursiveCharacterTextSplitter.
+
+    Además enriquece la metadata con `chunk_index` y `text` (contenido
+    original del chunk) para no depender de una base relacional extra.
+    """
     if chunk_size <= 0:
         raise ValueError("chunk_size debe ser > 0")
     if chunk_overlap < 0 or chunk_overlap >= chunk_size:

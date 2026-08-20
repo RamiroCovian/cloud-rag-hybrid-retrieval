@@ -10,7 +10,12 @@ from src.providers import get_embeddings
 
 
 def get_vector_store(settings: Settings | None = None) -> PineconeVectorStore:
-    """Conecta al índice Pinecone existente con el namespace configurado."""
+    """Devuelve un PineconeVectorStore listo para upsert y búsqueda.
+
+    Conecta al índice existente, inyecta el modelo de embeddings activo
+    y usa el namespace configurado. El texto del chunk se guarda en metadata
+    bajo la clave `text`.
+    """
     cfg = settings or get_settings()
     embeddings = get_embeddings(cfg)
     pc = Pinecone(api_key=cfg.pinecone_api_key)
