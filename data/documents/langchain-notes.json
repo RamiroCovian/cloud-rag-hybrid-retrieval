@@ -1,0 +1,18 @@
+{
+  "documents": [
+    {
+      "document_id": "langchain-ensemble",
+      "category": "framework",
+      "tags": ["framework", "langchain", "json"],
+      "page": 1,
+      "text": "LangChain ofrece PineconeVectorStore para búsqueda vectorial y BM25Retriever para recuperación léxica. Un EnsembleRetriever combina ambos y permite construir un RAGSystem que responde con los top-5 documentos más relevantes."
+    },
+    {
+      "document_id": "langchain-ingest-metadata",
+      "category": "framework",
+      "tags": ["framework", "metadata", "json"],
+      "page": 2,
+      "text": "Durante la ingesta, cada Document de LangChain lleva page_content y metadata. Campos útiles: source, page, category, tags y text. Los IDs estables tipo documento__chunk_N facilitan la evaluación posterior del Golden Set."
+    }
+  ]
+}

@@ -26,7 +26,7 @@ LLM_PROVIDERS = frozenset(
 # Defaults de modelo y dimensión por proveedor de embeddings.
 EMBEDDING_DEFAULTS: dict[str, tuple[str, int]] = {
     "openai": ("text-embedding-3-small", 1536),
-    "gemini": ("models/text-embedding-004", 768),
+    "gemini": ("models/gemini-embedding-001", 768),
     "voyage": ("voyage-3", 1024),
     "cohere": ("embed-english-v3.0", 1024),
     "openai_compatible": ("text-embedding-3-small", 1536),
