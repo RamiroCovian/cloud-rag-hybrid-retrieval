@@ -19,6 +19,7 @@ DEFAULT_GOLDEN_SET = EVALUATION_DIR / "golden_set.json"
 
 
 def load_golden_set(path: Path) -> list[dict]:
+    """Carga y valida el Golden Set JSON de evaluación."""
     if not path.exists():
         raise FileNotFoundError(f"No existe el Golden Set: {path}")
 
@@ -50,7 +51,7 @@ def load_golden_set(path: Path) -> list[dict]:
 
 
 def document_ids_from_results(documents, k: int) -> list[str]:
-    """Lista de document_id de los top-k recuperados (en orden)."""
+    """Extrae los `document_id` de los top-k documentos recuperados."""
     ids: list[str] = []
     for doc in documents[:k]:
         doc_id = str(doc.metadata.get("document_id", "")).strip()
@@ -63,6 +64,7 @@ def run_evaluation(
     golden_set_path: Path = DEFAULT_GOLDEN_SET,
     k: int = 5,
 ) -> dict:
+    """Corre todas las preguntas del Golden Set y calcula métricas."""
     cases = load_golden_set(golden_set_path)
     rag = RAGSystem(k=k)
 
@@ -92,6 +94,7 @@ def run_evaluation(
 
 
 def print_report(summary: dict) -> None:
+    """Imprime en consola el detalle por caso y los promedios finales."""
     k = summary["k"]
     print("=" * 60)
     print(f"Evaluación del recuperador híbrido (k={k})")
@@ -118,6 +121,7 @@ def print_report(summary: dict) -> None:
 
 
 def build_parser() -> argparse.ArgumentParser:
+    """Define los argumentos CLI del script de evaluación."""
     parser = argparse.ArgumentParser(
         description="Calcula Precision@k y Recall@k con un Golden Set."
     )
@@ -132,6 +136,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main() -> None:
+    """Punto de entrada: evalúa el recuperador e imprime el reporte."""
     args = build_parser().parse_args()
     summary = run_evaluation(golden_set_path=args.golden_set, k=args.k)
     print_report(summary)

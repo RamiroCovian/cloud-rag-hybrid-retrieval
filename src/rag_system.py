@@ -31,6 +31,17 @@ class RAGSystem:
         chunk_size: int = 2000,
         chunk_overlap: int = 250,
     ) -> None:
+        """Inicializa BM25 local, el retriever vectorial y el ensemble.
+
+        Args:
+            settings: Configuración del proyecto (si no, lee `.env`).
+            documents_dir: Corpus local usado por BM25.
+            k: Cantidad de documentos a devolver (top-k).
+            bm25_weight: Peso de la señal léxica en el ensemble.
+            vector_weight: Peso de la señal semántica (Pinecone).
+            chunk_size: Tamaño de chunk para el índice BM25 local.
+            chunk_overlap: Solapamiento entre chunks locales.
+        """
         if k <= 0:
             raise ValueError("k debe ser > 0")
         if bm25_weight < 0 or vector_weight < 0:
@@ -42,6 +53,7 @@ class RAGSystem:
         self.k = k
         self.documents_dir = documents_dir or DOCUMENTS_DIR
 
+        # BM25 necesita el texto local; Pinecone ya tiene los embeddings.
         local_chunks = split_documents(
             load_documents(self.documents_dir),
             chunk_size=chunk_size,
@@ -64,7 +76,15 @@ class RAGSystem:
         )
 
     def retrieve(self, query: str, k: int | None = None) -> list[Document]:
-        """Recupera los top-k documentos para una consulta."""
+        """Busca documentos relevantes combinando BM25 y Pinecone.
+
+        Args:
+            query: Pregunta o consulta en lenguaje natural.
+            k: Top-k opcional; si no se pasa, usa el k del constructor.
+
+        Returns:
+            Lista de documentos ordenados por relevancia híbrida.
+        """
         cleaned = query.strip()
         if not cleaned:
             raise ValueError("La consulta no puede estar vacía")
@@ -74,5 +94,5 @@ class RAGSystem:
         return documents[:top_k]
 
     def invoke(self, query: str) -> list[Document]:
-        """Alias de retrieve (compatible con la API de LangChain)."""
+        """Alias de `retrieve` para mantener una API similar a LangChain."""
         return self.retrieve(query)

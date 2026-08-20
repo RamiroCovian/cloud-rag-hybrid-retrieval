@@ -14,6 +14,7 @@ from src.rag_system import RAGSystem
 
 
 def build_parser() -> argparse.ArgumentParser:
+    """Define los argumentos CLI de la consulta híbrida."""
     parser = argparse.ArgumentParser(
         description="Consulta el RAG híbrido (BM25 + Pinecone)."
     )
@@ -28,6 +29,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main() -> None:
+    """Punto de entrada: consulta el RAG e imprime el top-k con preview."""
     args = build_parser().parse_args()
     rag = RAGSystem(k=args.k)
     docs = rag.retrieve(args.query, k=args.k)

@@ -7,6 +7,8 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class MetricResult:
+    """Resultado de métricas para una pregunta del Golden Set."""
+
     pregunta: str
     documento_id_esperado: str
     recuperados: list[str]
@@ -16,7 +18,7 @@ class MetricResult:
 
 
 def recall_at_k(expected_id: str, retrieved_ids: list[str], k: int) -> float:
-    """1.0 si el documento esperado está en el top-k; 0.0 si no."""
+    """Calcula Recall@k: 1.0 si el documento esperado está en el top-k."""
     top = retrieved_ids[:k]
     return 1.0 if expected_id in top else 0.0
 
@@ -26,7 +28,7 @@ def precision_at_k(
     retrieved_ids: list[str],
     k: int,
 ) -> float:
-    """Porcentaje de los top-k recuperados que son útiles."""
+    """Calcula Precision@k: proporción de docs útiles dentro del top-k."""
     if k <= 0:
         raise ValueError("k debe ser > 0")
     top = retrieved_ids[:k]
@@ -44,6 +46,7 @@ def evaluate_case(
     retrieved_ids: list[str],
     k: int = 5,
 ) -> MetricResult:
+    """Evalúa un caso del Golden Set y devuelve Recall@k + Precision@k."""
     useful = set(documentos_utiles) | {documento_id_esperado}
     recall = recall_at_k(documento_id_esperado, retrieved_ids, k)
     precision = precision_at_k(useful, retrieved_ids, k)
@@ -58,6 +61,7 @@ def evaluate_case(
 
 
 def average(values: list[float]) -> float:
+    """Promedia una lista de métricas; retorna 0.0 si está vacía."""
     if not values:
         return 0.0
     return sum(values) / len(values)

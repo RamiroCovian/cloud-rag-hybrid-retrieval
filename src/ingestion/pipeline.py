@@ -12,6 +12,7 @@ from src.vectorstore import get_vector_store
 
 
 def _stable_ids(chunks: list) -> list[str]:
+    """Genera IDs estables por documento (`doc__chunk_N`) para re-ingestas."""
     ids: list[str] = []
     counters: dict[str, int] = {}
     for chunk in chunks:
@@ -29,7 +30,11 @@ def run_ingestion(
     chunk_size: int = 2000,
     chunk_overlap: int = 250,
 ) -> dict[str, int | str]:
-    """Ejecuta el pipeline completo de ingesta hacia Pinecone."""
+    """Ejecuta el pipeline completo: índice → carga → chunking → upsert.
+
+    Returns:
+        Resumen con cantidad de docs/chunks e info del índice usado.
+    """
     cfg = settings or get_settings()
     source_dir = documents_dir or DOCUMENTS_DIR
 

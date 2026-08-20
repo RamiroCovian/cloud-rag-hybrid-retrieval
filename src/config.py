@@ -53,10 +53,12 @@ PROVIDER_API_KEY_ENV: dict[str, str] = {
 
 
 def _optional_env(name: str, default: str = "") -> str:
+    """Lee una variable de entorno y elimina espacios; si no existe, usa default."""
     return os.getenv(name, default).strip()
 
 
 def _require_env(name: str) -> str:
+    """Lee una variable de entorno obligatoria; lanza error si está vacía."""
     value = _optional_env(name)
     if not value:
         raise ValueError(f"Falta la variable de entorno requerida: {name}")
@@ -64,6 +66,7 @@ def _require_env(name: str) -> str:
 
 
 def _normalize_provider(value: str, allowed: frozenset[str], label: str) -> str:
+    """Normaliza el nombre del proveedor y valida que esté en la lista permitida."""
     provider = value.strip().lower()
     if provider not in allowed:
         options = ", ".join(sorted(allowed))
@@ -72,7 +75,11 @@ def _normalize_provider(value: str, allowed: frozenset[str], label: str) -> str:
 
 
 def _resolve_api_key(provider: str, explicit_env: str | None = None) -> str:
-    """Resuelve la API key del proveedor; acepta alias GEMINI_API_KEY → GOOGLE_API_KEY."""
+    """Obtiene la API key del proveedor activo.
+
+    Acepta alias (p. ej. GEMINI_API_KEY → GOOGLE_API_KEY) y fallbacks
+    razonables para openai_compatible.
+    """
     if explicit_env:
         return _require_env(explicit_env)
 
@@ -98,6 +105,8 @@ def _resolve_api_key(provider: str, explicit_env: str | None = None) -> str:
 
 @dataclass(frozen=True)
 class Settings:
+    """Configuración inmutable del proyecto cargada desde `.env`."""
+
     pinecone_api_key: str
     index_name: str
     pinecone_cloud: str
@@ -117,6 +126,7 @@ class Settings:
 
 
 def get_settings() -> Settings:
+    """Construye y valida Settings a partir de las variables de entorno."""
     embedding_provider = _normalize_provider(
         _optional_env("EMBEDDING_PROVIDER", "gemini"),
         EMBEDDING_PROVIDERS,

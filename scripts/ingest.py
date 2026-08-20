@@ -15,6 +15,7 @@ from src.ingestion import run_ingestion
 
 
 def build_parser() -> argparse.ArgumentParser:
+    """Define los argumentos CLI del pipeline de ingesta."""
     parser = argparse.ArgumentParser(
         description="Pipeline de ingesta a Pinecone (chunking + embeddings + metadata)."
     )
@@ -40,6 +41,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main() -> None:
+    """Punto de entrada: ejecuta la ingesta e imprime un resumen."""
     args = build_parser().parse_args()
     result = run_ingestion(
         documents_dir=args.documents_dir,

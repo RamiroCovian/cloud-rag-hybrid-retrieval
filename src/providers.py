@@ -9,7 +9,10 @@ from src.config import Settings, get_settings
 
 
 def get_embeddings(settings: Settings | None = None) -> Embeddings:
-    """Devuelve el cliente de embeddings según EMBEDDING_PROVIDER."""
+    """Crea el cliente de embeddings del proveedor configurado.
+
+    Soporta openai, gemini, voyage, cohere y endpoints OpenAI-compatible.
+    """
     cfg = settings or get_settings()
     provider = cfg.embedding_provider
 
@@ -61,7 +64,10 @@ def get_embeddings(settings: Settings | None = None) -> Embeddings:
 
 
 def get_chat_model(settings: Settings | None = None) -> BaseChatModel:
-    """Devuelve el chat model según LLM_PROVIDER."""
+    """Crea el modelo de chat del proveedor configurado.
+
+    Soporta openai, gemini, anthropic, grok y endpoints OpenAI-compatible.
+    """
     cfg = settings or get_settings()
     provider = cfg.llm_provider
 

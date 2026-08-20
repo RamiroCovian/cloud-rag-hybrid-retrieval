@@ -10,7 +10,14 @@ METRIC = "cosine"
 
 
 def ensure_pinecone_index(settings: Settings | None = None) -> str:
-    """Verifica el índice y lo crea en modo Serverless si falta."""
+    """Asegura que el índice Serverless exista y esté listo para usar.
+
+    Si el índice ya existe, solo informa. Si no, lo crea con dimensión,
+    métrica cosine y región tomadas de Settings.
+
+    Returns:
+        Nombre del índice configurado.
+    """
     cfg = settings or get_settings()
     pc = Pinecone(api_key=cfg.pinecone_api_key)
 
