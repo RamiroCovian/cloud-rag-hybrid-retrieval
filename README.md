@@ -128,6 +128,16 @@ Detalle por caso:
 | 5 | `langchain-ensemble` | 1.00 | 0.40 |
 
 Interpretación breve: el documento correcto siempre entra en el Top-5 (Recall perfecto). La Precision es más baja porque el corpus es pequeño y varios chunks relacionados también aparecen en el ranking.
+
+## Tests unitarios (opcional)
+
+```powershell
+pip install -r requirements.txt
+pytest -q
+```
+
+Cubren métricas (`Precision@k` / `Recall@k`), loaders y chunking, sin llamar a APIs externas.
+
 ## Flujo completo (checklist)
 
 1. Configurar `.env`
