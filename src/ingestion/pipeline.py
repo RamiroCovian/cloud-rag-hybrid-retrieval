@@ -4,14 +4,11 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from langchain_pinecone import PineconeVectorStore
-from pinecone import Pinecone
-
 from src.config import DOCUMENTS_DIR, Settings, get_settings
 from src.ingestion.chunking import split_documents
 from src.ingestion.loaders import load_documents
 from src.pinecone_index import ensure_pinecone_index
-from src.providers import get_embeddings
+from src.vectorstore import get_vector_store
 
 
 def _stable_ids(chunks: list) -> list[str]:
@@ -47,17 +44,7 @@ def run_ingestion(
     if not chunks:
         raise ValueError("No se generaron chunks para indexar.")
 
-    embeddings = get_embeddings(cfg)
-    pc = Pinecone(api_key=cfg.pinecone_api_key)
-    index = pc.Index(cfg.index_name)
-
-    vector_store = PineconeVectorStore(
-        index=index,
-        embedding=embeddings,
-        namespace=cfg.pinecone_namespace,
-        text_key="text",
-    )
-
+    vector_store = get_vector_store(cfg)
     ids = _stable_ids(chunks)
     vector_store.add_documents(documents=chunks, ids=ids)
 
