@@ -28,6 +28,7 @@ def get_embeddings(settings: Settings | None = None) -> Embeddings:
         return GoogleGenerativeAIEmbeddings(
             model=cfg.embedding_model,
             google_api_key=cfg.embedding_api_key,
+            output_dimensionality=cfg.embedding_dimension,
         )
 
     if provider == "voyage":
