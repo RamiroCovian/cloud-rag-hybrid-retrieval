@@ -1,1 +1,1 @@
-"""Módulo de recuperación híbrida RAG con Pinecone."""
+"""Paquete fuente del sistema RAG híbrido."""
